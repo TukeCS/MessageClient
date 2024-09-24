@@ -5,9 +5,15 @@ use std::io::{self};
 use std::net::TcpStream;
 use std::sync::{Arc, Mutex};
 use std::thread;
+use ctrlc;
 
 fn main() {
     let server_address = "88.178.231.193:17172";
+
+    ctrlc::set_handler(move || {
+        println!("bye!");
+        std::process::exit(0);
+    }).expect("Error setting Ctrl+C handler");
 
     println!("Enter your username: ");
     let mut username = String::new();
