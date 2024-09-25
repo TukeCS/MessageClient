@@ -1,23 +1,26 @@
 mod network;
 mod utils;
 
+use ctrlc;
 use std::io::{self};
 use std::net::TcpStream;
 use std::sync::{Arc, Mutex};
 use std::thread;
-use ctrlc;
 
 fn main() {
     let server_address = "88.178.231.193:17172";
 
     ctrlc::set_handler(move || {
-        println!("bye!");
+        println!("\nbye!");
         std::process::exit(0);
-    }).expect("Error setting Ctrl+C handler");
+    })
+    .expect("Error setting Ctrl+C handler");
 
     println!("Enter your username: ");
     let mut username = String::new();
-    io::stdin().read_line(&mut username).expect("Failed to read username");
+    io::stdin()
+        .read_line(&mut username)
+        .expect("Failed to read username");
     let username = username.trim().to_string();
 
     let stream = match TcpStream::connect(server_address) {
@@ -40,5 +43,7 @@ fn main() {
 
     network::send_messages(stream, username);
 
-    receive_thread.join().expect("Failed to join receive thread");
+    receive_thread
+        .join()
+        .expect("Failed to join receive thread");
 }
